@@ -1,0 +1,28 @@
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.cache
+.vs/
+*.DotSettings.user
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+
+# Build
+wwwroot/
+
+# Environment
+.env
+.env.local
+*.log
