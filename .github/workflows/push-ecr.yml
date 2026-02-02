@@ -66,6 +66,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-task-def.outputs.task-definition }}
-          service: image-gallery-service
+          service: image-gallery-task-service
           cluster: image-gallery-cluster
           wait-for-service-stability: true
