@@ -19,6 +19,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Verify AWS identity (safe)
+        run: aws sts get-caller-identity
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -39,13 +42,15 @@ jobs:
 
           echo "Pushed: $IMAGE_URI:$IMAGE_TAG and :latest"
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Download task definition
         run: |
           aws ecs describe-task-definition \
             --task-definition image-gallery-task \
             --query 'taskDefinition' \
             --output json > task-definition.json
-          # Remove fields that cannot be re-registered
           jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-definition.json > clean-task-definition.json
           mv clean-task-definition.json task-definition.json
 
@@ -58,7 +63,7 @@ jobs:
           image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
 
       - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-task-def.outputs.task-definition }}
           service: image-gallery-service
