@@ -51,7 +51,7 @@ jobs:
             --task-definition image-gallery-task \
             --query 'taskDefinition' \
             --output json > task-definition.json
-          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-definition.json > clean-task-definition.json
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .enableFaultInjection)' task-definition.json > clean-task-definition.json
           mv clean-task-definition.json task-definition.json
 
       - name: Render new task definition
